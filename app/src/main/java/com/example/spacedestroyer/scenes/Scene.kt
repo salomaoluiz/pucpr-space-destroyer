@@ -1,8 +1,7 @@
-package com.example.spacedestroyer
+package com.example.spacedestroyer.scenes
 
 import android.graphics.Canvas
 import android.view.MotionEvent
-import android.view.View
 
 interface Scene {
 
@@ -11,5 +10,5 @@ interface Scene {
     fun onTouch(e: MotionEvent): Boolean
     fun onResume()
     fun onPause()
-
+    fun onDestroy()
 }

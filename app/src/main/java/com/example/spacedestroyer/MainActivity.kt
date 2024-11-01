@@ -3,22 +3,18 @@ package com.example.spacedestroyer
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.os.Build
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import kotlin.random.Random
+import com.example.spacedestroyer.scenes.Scene
+import com.example.spacedestroyer.scenes.StartScene
 
 class MainActivity : AppCompatActivity() {
 
-    var screen: Screen? = null
+    private var screen: Screen? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +63,10 @@ class MainActivity : AppCompatActivity() {
         fun setEventPause() {
             scene.onPause()
         }
+
+        fun onDestroy() {
+            scene.onDestroy()
+        }
     }
 
     override fun onResume() {
@@ -77,5 +77,10 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         screen?.setEventPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        screen?.onDestroy();
     }
 }

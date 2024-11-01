@@ -1,20 +1,17 @@
-package com.example.spacedestroyer
+package com.example.spacedestroyer.entities
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Rect
-import android.media.AudioAttributes
-import android.media.SoundPool
 import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
+import com.example.spacedestroyer.bullets.Bullet
 import kotlin.math.sqrt
 
-class Spaceship(private val context: Context, private var x: Float, private var y: Float): GameObject {
+class Spaceship(private val context: Context, var x: Float, private var y: Float): GameObject {
 
     companion object {
         const val WIDTH = 16
@@ -33,8 +30,9 @@ class Spaceship(private val context: Context, private var x: Float, private var 
     private var targetX = x
     private var targetY = y
     private val bullets = mutableListOf<Bullet>()
-    private val bulletPaint = Paint().apply { color = Color.WHITE }
 
+    private var bulletSpeed = 1f
+    private var bulletFrequency = 1
     private var lastShotTime = 0L
     init {
         imageBitmap = loadBitmap("ship.png")
@@ -71,9 +69,7 @@ class Spaceship(private val context: Context, private var x: Float, private var 
         val ship = imageBitmap ?: return
         canvas.drawBitmap(ship, src, dst, null)
 
-        canvas.drawBitmap(ship, src, dst, null)
-
-        bullets.forEach { it.render(canvas, bulletPaint) }
+        bullets.forEach { it.render(canvas) }
     }
 
     override fun handleEvent(event: Int, x: Float, y: Float) {
@@ -85,10 +81,12 @@ class Spaceship(private val context: Context, private var x: Float, private var 
             targetY = y - verticalOffset
         }
     }
+
     private fun shoot() {
         val currentTime = SystemClock.elapsedRealtime()
-        if (currentTime - lastShotTime >= SHOOT_INTERVAL) {
-            bullets.add(Bullet(context, x, y))
+        if (currentTime - lastShotTime >= SHOOT_INTERVAL - bulletFrequency * 10 ) {
+
+            bullets.add(Bullet(context, x, y, bulletSpeed))
             lastShotTime = currentTime
         }
     }
@@ -105,5 +103,29 @@ class Spaceship(private val context: Context, private var x: Float, private var 
         }
 
         return null
+    }
+
+    fun getBullets(): MutableList<Bullet> {
+        return bullets
+    }
+    fun increaseBulletsFrequency() {
+        if(bulletFrequency < 30) {
+            bulletFrequency += 1
+        }
+    }
+
+    fun increaseBulletSpeed() {
+        if(bulletSpeed < 10) {
+            bulletSpeed += 0.5f
+        }
+    }
+
+    override fun getRect(): Rect {
+        return Rect(
+            (x - WIDTH / 2 * SCALE).toInt(),
+            (y - HEIGHT / 2 * SCALE).toInt(),
+            (x + WIDTH / 2 * SCALE).toInt(),
+            (y + HEIGHT / 2 * SCALE).toInt()
+        )
     }
 }

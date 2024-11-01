@@ -1,30 +1,38 @@
-package com.example.spacedestroyer
+package com.example.spacedestroyer.bullets
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.media.AudioAttributes
 import android.media.SoundPool
+import com.example.spacedestroyer.entities.GameObject
 
-class Bullet(private var context: Context, private var x: Float, private var y: Float) {
-    private val speed = 1f
+class Bullet(private var context: Context, private var x: Float, private var y: Float, private var speed: Float = 1f) :
+    GameObject {
     private val radius = 10f
     private lateinit var soundPool: SoundPool
     private var soundId = 0
     private var isSoundLoaded = false
+    private val bulletPaint = Paint().apply { color = Color.WHITE }
 
     init {
         initializeSoundPool()
         loadSound("laser_shot.mp3")
     }
 
-    fun update(et: Float) {
+   override fun update(et: Float) {
         y -= speed * et
     }
 
-    fun render(canvas: Canvas, paint: Paint) {
-        canvas.drawCircle(x, y, radius, paint)
+
+    override fun handleEvent(event: Int, x: Float, y: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override  fun render(canvas: Canvas) {
+        canvas.drawCircle(x, y, radius, bulletPaint)
     }
 
     fun isOffScreen(): Boolean {
@@ -62,13 +70,13 @@ class Bullet(private var context: Context, private var x: Float, private var y: 
         }
     }
 
-    fun playSound() {
+   private fun playSound() {
         if (isSoundLoaded) {
             soundPool.play(soundId, 1f, 1f, 1, 0, 1f)
         }
     }
 
-    fun getRect(): Rect {
+    override  fun getRect(): Rect {
         return Rect(
             (x - radius).toInt(),
             (y - radius).toInt(),
