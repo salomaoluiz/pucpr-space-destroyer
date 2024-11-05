@@ -26,6 +26,7 @@ class GameScene(private val screen: MainActivity.Screen) : Scene {
     private var spawnTime = 0f
     private var speedMultiplier = 1f
     private var lastPowerUpScore = 0
+    private val background = Background(screen.context, screen.width, screen.height)
 
     init {
         initializeMediaPlayer()
@@ -65,11 +66,12 @@ class GameScene(private val screen: MainActivity.Screen) : Scene {
         powerUps.forEach { it.update(et) }
         checkPowerUpCollection()
         title.update(et)
-
+        background.update()
 
     }
 
     override fun render(canvas: Canvas) {
+        background.render(canvas)
         goArray.forEach { it.render(canvas) }
         enemies.forEach { it.render(canvas) }
         powerUps.forEach { it.render(canvas) }
